@@ -135,7 +135,7 @@ This project is licensed under the [MIT License](https://opensource.org/licenses
 ## Author Information
 Created by [Kristopher Newman](https://github.com/khaosx)  
 GitHub Repository: [ansible-role-plex-server](https://github.com/khaosx/ansible-role-plex-server)  
-Ansible Galaxy: your_username.plex_server  
+Ansible Galaxy: [khaosx.plex-server](https://galaxy.ansible.com/ui/standalone/roles/khaosx/plex-server/documentation/)
 
 ## Contributing
 Contributions are welcome! If you have improvements or feature requests, please open an issue or submit a pull request on GitHub.
