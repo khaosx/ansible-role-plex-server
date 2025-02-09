@@ -1,0 +1,112 @@
+# tasks/main.yml
+
+- name: Check if secrets.yml exists
+  ansible.builtin.stat:
+    path: "{{ role_path }}/vars/secrets.yml"
+  register: plex_server_secrets_file
+
+- name: Include secret variables if the secrets file exists
+  ansible.builtin.include_vars:
+    file: secrets.yml
+    dir: "{{ role_path }}/vars"
+  when: plex_server_secrets_file.stat.exists
+  tags: always
+
+- name: Install dependencies
+  ansible.builtin.apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - gnupg
+      - nfs-common
+    state: present
+    update_cache: true
+
+- name: Add GPG key for Plex
+  ansible.builtin.get_url:
+    url: https://downloads.plex.tv/plex-keys/PlexSign.key
+    dest: /usr/share/keyrings/plexserver.asc
+    mode: '0644'
+
+- name: Add Plex repository
+  ansible.builtin.apt_repository:
+    repo: >
+      deb [signed-by=/usr/share/keyrings/plexserver.asc arch=amd64] 
+      https://downloads.plex.tv/repo/deb 
+      {{ ansible_facts['distribution'] | lower }} 
+      {{ ansible_facts['distribution_release'] | lower }} 
+      main
+    state: present
+    filename: plex
+
+- name: Update apt cache
+  ansible.builtin.apt:
+    update_cache: true
+
+- name: Install Plex Media Server
+  ansible.builtin.apt:
+    name: plexmediaserver
+    state: latest
+
+- name: Claim Plex Media Server
+  ansible.builtin.command: >
+    bash -c "PLEX_CLAIM={{ plex_server_plex_claim_token }} dpkg-reconfigure plexmediaserver"
+  when: plex_server_plex_claim_token | default('') | length > 0
+
+- name: Create NFS mount point
+  ansible.builtin.file:
+    path: "{{ plex_server_nfs_mount_point }}"
+    state: directory
+    owner: "{{ plex_server_plex_user }}"
+    group: "{{ plex_server_plex_group }}"
+    mode: '0755'
+
+- name: Mount NFS share
+  ansible.posix.mount:
+    src: "{{ plex_server_nfs_server }}:{{ plex_server_nfs_export }}"
+    path: "{{ plex_server_nfs_mount_point }}"
+    fstype: nfs
+    opts: rw
+    state: mounted
+
+- name: Ensure NFS share is mounted on boot
+  ansible.posix.mount:
+    src: "{{ plex_server_nfs_server }}:{{ plex_server_nfs_export }}"
+    path: "{{ plex_server_nfs_mount_point }}"
+    fstype: nfs
+    opts: defaults
+    state: mounted
+
+- name: Start and enable Plex Media Server
+  ansible.builtin.service:
+    name: plexmediaserver
+    state: started
+    enabled: yes
+
+# Optional Firewall Configuration
+- name: Configure Firewall (UFW)
+  when: plex_server_firewall_enabled
+  tags: firewall
+  block:
+
+    - name: Allow Plex TCP ports through UFW
+      ansible.builtin.ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: tcp
+      loop:
+        - 32400
+        - 32469
+      notify: plex_server_restart_ufw
+
+    - name: Allow Plex UDP ports through UFW
+      ansible.builtin.ufw:
+        rule: allow
+        port: '{{ item }}'
+        proto: udp
+      loop:
+        - 1900
+        - '32410:32414'
+      notify: plex_server_restart_ufw
+

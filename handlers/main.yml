@@ -1,0 +1,12 @@
+---
+# handlers/main.yml
+
+- name: plex_server_restart_plex_media_server
+  ansible.builtin.service:
+    name: plexmediaserver
+    state: restarted
+
+- name: plex_server_restart_ufw
+  ansible.builtin.service:
+    name: ufw
+    state: restarted

@@ -1,0 +1,15 @@
+# defaults/main.yml
+
+# Plex Media Server variables
+plex_server_plex_version: "public"  # Options: "public" or "plexpass"
+plex_server_plex_user: "plex"
+plex_server_plex_group: "plex"
+plex_server_plex_claim_token: ""
+
+# NFS variables
+plex_server_nfs_server: "palladium.khaosx.io"  # Default NFS server FQDN
+plex_server_nfs_export: "/volume1/Proxmox_ISO"
+plex_server_nfs_mount_point: "/media"
+
+# Firewall variables
+plex_server_firewall_enabled: false  # Set to true to configure the firewall
