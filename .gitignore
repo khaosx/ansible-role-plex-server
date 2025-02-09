@@ -1,4 +1,4 @@
 # .gitignore
 
 # Ignore secret variable files
-secrets.yml
+vars/secrets.yml
