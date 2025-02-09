@@ -7,8 +7,8 @@ plex_server_plex_group: "plex"
 plex_server_plex_claim_token: ""
 
 # NFS variables
-plex_server_nfs_server: "palladium.khaosx.io"  # Default NFS server FQDN
-plex_server_nfs_export: "/volume1/Proxmox_ISO"
+plex_server_nfs_server: "server.example.com"  # Default NFS server FQDN
+plex_server_nfs_export: "/volume1/media"
 plex_server_nfs_mount_point: "/media"
 
 # Firewall variables

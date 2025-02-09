@@ -72,7 +72,7 @@ This variable is useful when testing the role in environments where certain task
 | `plex_server_testing`         | `false`       | Set to `true` to skip tasks that cannot run in a testing environment. |
 
 ### Handling Sensitive Variables
-To securely manage sensitive variables, you can use vars/secrets.yml to override defaults without exposing them in version control. Ensure that this file is added to `.gitignore`:
+To securely manage sensitive variables, you can use vars/secrets.yml to override defaults without exposing them in version control. A file named `defaults.secrets.yml` can be renamed to `secrets.yml` to ease the process. Ensure that `secrets.yml` is added to `.gitignore`:
 
 ``` gitignore
 # .gitignore
