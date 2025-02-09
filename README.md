@@ -1,8 +1,8 @@
 # Ansible Role: Plex Media Server
 
-[![Ansible Role](https://img.shields.io/ansible/role/)](https://galaxy.ansible.com/your_username/plex_server)
+[![Ansible Role](https://img.shields.io/ansible/role/)](https://galaxy.ansible.com//khaosx/plex-server/)
 [![Ansible License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-[![Ansible Quality Score](https://img.shields.io/ansible/quality/)](https://galaxy.ansible.com/your_username/plex_server)
+[![Ansible Quality Score](https://img.shields.io/ansible/quality/)](https://galaxy.ansible.com/khaosx/plex_server)
 
 An Ansible role that installs and configures [Plex Media Server](https://www.plex.tv/) on Debian or Ubuntu servers. This role also mounts an NFS share to a specified directory, allowing Plex to access media files stored on a network file system.
 
