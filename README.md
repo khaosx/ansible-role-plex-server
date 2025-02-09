@@ -1,7 +1,7 @@
 # Ansible Role: Plex Media Server
 
-[![Ansible Role](https://img.shields.io/ansible/role/d/:khaosx/:plex-server)]
-(https://galaxy.ansible.com/ui/standalone/roles/khaosx/plex-server/)
+![Ansible Role](https://img.shields.io/ansible/role/d/khaosx/plex-server)
+
 
 
 [![Ansible License](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
