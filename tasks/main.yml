@@ -1,4 +1,4 @@
-# tasks/main.yml
+# tasks/main.yml  
 
 - name: Check if secrets.yml exists
   ansible.builtin.stat:
@@ -20,6 +20,7 @@
       - curl
       - gnupg
       - nfs-common
+      - sqlite3
     state: present
     update_cache: true
 
@@ -87,25 +88,41 @@
 # Optional Firewall Configuration
 - name: Configure Firewall (UFW)
   when: plex_server_firewall_enabled
-  tags: firewall
   block:
 
-    - name: Allow Plex TCP ports through UFW
-      ansible.builtin.ufw:
-        rule: allow
-        port: '{{ item }}'
-        proto: tcp
-      loop:
-        - 32400
-        - 32469
+    - name: Set logging
+      community.general.ufw:
+        logging: "{{ plex_server_firewall_logging_state }}"
       notify: plex_server_restart_ufw
 
-    - name: Allow Plex UDP ports through UFW
-      ansible.builtin.ufw:
+    - name: Turn off IPv6 in UFW
+      ansible.builtin.replace:
+        path: /etc/default/ufw
+        regexp: 'IPV6=yes'
+        replace: 'IPV6=no'
+
+    - name: Allow all traffic <-- RFC1918
+      community.general.ufw:
         rule: allow
-        port: '{{ item }}'
-        proto: udp
+        src: '{{ item }}'
       loop:
-        - 1900
-        - '32410:32414'
+        - 10.0.0.0/8
+        - 172.16.0.0/12
+        - 192.168.0.0/16
+      notify: plex_server_restart_ufw
+
+    - name: Allow Plex services <-- RFC1918
+      community.general.ufw:
+        rule: allow
+        port: "{{ item.port }}"
+        proto: "{{ item.protocol }}"
+        src: "{{ item.source }}"
+        comment: "{{ item.comment }}"
+      with_items: '{{ plex_server_firewall__rules }}'
+      notify: Reload firewall
+
+    - name: Deny everything else and enable UFW
+      community.general.ufw:
+        state: enabled
+        policy: deny
       notify: plex_server_restart_ufw

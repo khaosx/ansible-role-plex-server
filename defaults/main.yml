@@ -13,3 +13,6 @@ plex_server_nfs_mount_point: "/media"
 
 # Firewall variables
 plex_server_firewall_enabled: false  # Set to true to configure the firewall
+plex_server_firewall_logging_state: 'on'
+plex_server_firewall__rules:
+  - {source: 'any', port: '32400', protocol: 'tcp', comment: 'Main Plex Port'}
