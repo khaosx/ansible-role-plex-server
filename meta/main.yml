@@ -3,7 +3,6 @@
 galaxy_info:
   author: Kristopher Newman
   description: Install Plex Media Server and mount NFS share
-  company: Your Company
   license: MIT
   min_ansible_version: "2.9"
   platforms:
